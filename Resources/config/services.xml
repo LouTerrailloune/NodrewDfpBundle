@@ -21,6 +21,7 @@
             <argument>%nodrew.dfp.publisher_id%</argument>
             <argument>%nodrew.dfp.div_class%</argument>
             <argument>%nodrew.dfp.targets%</argument>
+            <argument>%nodrew.dfp.synchronous_mode%</argument>
         </service>
 
         <service id="nodrew.dfp.control.listener" class="%nodrew.dfp.control.listener.class%">

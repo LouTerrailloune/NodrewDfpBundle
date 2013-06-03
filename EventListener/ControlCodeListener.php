@@ -81,7 +81,24 @@ class ControlCodeListener
      */
     protected function getMainControlCode()
     {
-        return <<< CONTROL
+        if($this->settings->getSynchronousMode())
+        {
+            return <<< CONTROL
+
+<script type='text/javascript'>
+(function() {
+var useSSL = 'https:' == document.location.protocol;
+var src = (useSSL ? 'https:' : 'http:') +
+'//www.googletagservices.com/tag/js/gpt.js';
+document.write('<scr' + 'ipt src="' + src + '"></scr' + 'ipt>');
+})();
+</script>
+
+CONTROL;
+        }
+        else
+        {
+            return <<< CONTROL
 
 <script type="text/javascript">
 var googletag = googletag || {};
@@ -99,6 +116,7 @@ node.parentNode.insertBefore(gads, node);
 </script>
 
 CONTROL;
+        }
     }
     
     /**
@@ -110,24 +128,26 @@ CONTROL;
     {
         $publisherId = trim($this->settings->getPublisherId(), '/');
 
-        $htmlCode  = <<< BLOCK
-<script type="text/javascript">
-googletag.cmd.push(function() {
+        $htmlCode = "<script type=\"text/javascript\">\n";
 
-BLOCK;
+        if(!$this->settings->getSynchronousMode())
+            $htmlCode .= "googletag.cmd.push(function() {\n";
 
         foreach ($this->collection as $unit) {
             /** @var $unit AdUnit */
-            $htmlCode .= "googletag.".$unit->getSizes() === null ? 'defineOutOfPageSlot' : 'defineSlot'."('/{$publisherId}/".$unit->getPath()."', ".$this->printSizes($unit->getSizes()).", '".$unit->getDivId()."').addService(googletag.pubads())".$this->getTargetsBlock($unit->getTargets()).";\n";
+            $htmlCode .= "googletag.".($unit->getSizes() === null ? 'defineOutOfPageSlot' : 'defineSlot')."('/{$publisherId}/".$unit->getPath()."', ".$this->printSizes($unit->getSizes()).", '".$unit->getDivId()."').addService(googletag.pubads())".$this->getTargetsBlock($unit->getTargets()).";\n";
         }
 
-        $htmlCode  .= <<< BLOCK
-googletag.pubads().enableSingleRequest();
-googletag.enableServices();
-});
-</script>
+        if($this->settings->getSynchronousMode())
+            $htmlCode .= "googletag.pubads().enableSyncRendering();\n";
 
-BLOCK;
+        $htmlCode .= "googletag.pubads().enableSingleRequest();\n";
+        $htmlCode .= "googletag.enableServices();\n";
+
+        if(!$this->settings->getSynchronousMode())
+            $htmlCode .= "});";
+
+        $htmlCode .= "</script>\n\n";
 
         return $htmlCode;
     }

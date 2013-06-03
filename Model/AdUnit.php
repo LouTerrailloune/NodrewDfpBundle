@@ -52,14 +52,22 @@ class AdUnit extends TargetContainer
         $class  = $settings->getDivClass();
         $style  = $this->getStyles();
         
-        return <<< RETURN
+        $htmlCode = "<div id=\"".$this->divId."\" class=\"".$class."\" style=\"".$style."\">\n";
+        $htmlCode .= "<script type=\"text/javascript\">\n";
 
-<div id="{$this->divId}" class="{$class}" style="$style">
-<script type="text/javascript">
-googletag.cmd.push(function() { googletag.display('{$this->divId}'); });
-</script>
-</div>
-RETURN;
+        if($settings->getSynchronousMode())
+        {
+            $htmlCode .= "googletag.display(\"".$this->divId."\");\n";
+        }
+        else
+        {
+            $htmlCode .= "googletag.cmd.push(function() { googletag.display(\"".$this->divId."\"); });\n";
+        }
+
+        $htmlCode .= "</script>\n";
+        $htmlCode .= "</div>\n";
+
+        return $htmlCode;
     }
     
     protected function getStyles()

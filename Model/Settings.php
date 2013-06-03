@@ -16,17 +16,19 @@ class Settings extends TargetContainer
 {
     protected $publisherId;
     protected $divClass;
+    protected $synchronousMode;
 
     /**
      * @param int $publisherId
      * @param int $divClass
      * @param array $targets
      */
-    public function __construct($publisherId, $divClass, array $targets = array())
+    public function __construct($publisherId, $divClass, array $targets, $synchronousMode)
     {
         $this->setPublisherId($publisherId);
         $this->setDivClass($divClass);
         $this->setTargets($targets);
+        $this->setSynchronousMode($synchronousMode);
     }
 
     /**
@@ -68,4 +70,22 @@ class Settings extends TargetContainer
     {
         $this->divClass = $divClass;
     }
+
+    /**
+     * @param boolean $synchronousMode
+     */
+    public function setSynchronousMode($synchronousMode)
+    {
+        $this->synchronousMode = (boolean)$synchronousMode;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getSynchronousMode()
+    {
+        return $this->synchronousMode;
+    }
+
+
 }

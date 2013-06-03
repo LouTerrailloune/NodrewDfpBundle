@@ -30,7 +30,8 @@ class Configuration
             ->children()
                 ->scalarNode('publisher_id')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('div_class')->defaultValue('dfp-ad-unit')->end()
-                ->variableNode('targets')->end()
+                ->variableNode('targets')->defaultValue(array())->end()
+                ->booleanNode('synchronous_mode')->defaultFalse()->end()
             ->end()
         ;
 
