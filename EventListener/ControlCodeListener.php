@@ -61,10 +61,12 @@ class ControlCodeListener
         $controlCode = '';
         if (count($this->collection) > 0) {
             $controlCode .= $this->getMainControlCode();
-            
+/*
             foreach ($this->collection as $unit) {
                 $controlCode .= $unit->getSizes() === null ? $this->getOutOfPageAdControlBlock($unit) : $this->getAdControlBlock($unit);
             }
+*/
+            $controlCode .= $this->getAdsControlBlock();
         }
 
         $response->setContent(str_replace(self::PLACEHOLDER, $controlCode, $response->getContent()));
@@ -100,54 +102,34 @@ CONTROL;
     }
     
     /**
-     * Get the control block for an individual ad.
+     * Get the control block for all ads in request.
      *
      * @return string
      */
-    protected function getAdControlBlock(AdUnit $unit)
+    protected function getAdsControlBlock()
     {
         $publisherId = trim($this->settings->getPublisherId(), '/');
-        $targets     = $this->getTargetsBlock($unit->getTargets());
-        $sizes       = $this->printSizes($unit->getSizes());
-        $divId       = $unit->getDivId();
-        $path        = $unit->getPath();
 
-        return <<< BLOCK
-
+        $htmlCode  = <<< BLOCK
 <script type="text/javascript">
 googletag.cmd.push(function() {
-googletag.defineSlot('/{$publisherId}/{$path}', {$sizes}, '{$divId}').addService(googletag.pubads());
+
+BLOCK;
+
+        foreach ($this->collection as $unit) {
+            /** @var $unit AdUnit */
+            $htmlCode .= "googletag.".$unit->getSizes() === null ? 'defineOutOfPageSlot' : 'defineSlot'."('/{$publisherId}/".$unit->getPath()."', ".$this->printSizes($unit->getSizes()).", '".$unit->getDivId()."').addService(googletag.pubads())".$this->getTargetsBlock($unit->getTargets()).";\n";
+        }
+
+        $htmlCode  .= <<< BLOCK
 googletag.pubads().enableSingleRequest();
-googletag.enableServices();{$targets}
+googletag.enableServices();
 });
 </script>
 
 BLOCK;
-    }
-    
-    /**
-     * Get the control block for an individual ad.
-     *
-     * @return string
-     */
-    protected function getOutOfPageAdControlBlock(AdUnit $unit)
-    {
-        $publisherId = trim($this->settings->getPublisherId(), '/');
-        $targets     = $this->getTargetsBlock($unit->getTargets());
-        $divId       = $unit->getDivId();
-        $path        = $unit->getPath();
 
-        return <<< BLOCK
-
-<script type="text/javascript">
-googletag.cmd.push(function() {
-googletag.defineOutOfPageSlot('/{$publisherId}/{$path}', '{$divId}').addService(googletag.pubads());
-googletag.pubads().enableSingleRequest();
-googletag.enableServices();{$targets}
-});
-</script>
-
-BLOCK;
+        return $htmlCode;
     }
     
     /**
@@ -184,8 +166,7 @@ BLOCK;
                 $targets[$name] = $target;
             }
         }
-        
-        
+
         foreach ($targets as $name => $target) {
             if ($target === null || $target === '') {
                 continue;
@@ -204,7 +185,7 @@ BLOCK;
                 $target = "'$target'";
             }
 
-            $block .= "\ngoogletag.target('$name', [$target]);";
+            $block .= ".setTargeting('$name', [$target])";
         }
 
         return $block;
