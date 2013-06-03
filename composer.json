@@ -23,8 +23,8 @@
     },
 
     "autoload": {
-        "psr-0": { "Nodrew\Bundle\DfpBundle": "" }
+        "psr-0": { "Nodrew\\Bundle\\DfpBundle": "" }
     },
 
-    "target-dir": "Nodrew\Bundle\DfpBundle"
+    "target-dir": "Nodrew\\Bundle\\DfpBundle"
 }
