@@ -72,6 +72,8 @@ class AdUnit extends TargetContainer
     
     protected function getStyles()
     {
+        return "";
+
         if ($this->getSizes() == null) {
             return 'width: 0; height: 0; position: absolute; bottom: 0;';
         }
