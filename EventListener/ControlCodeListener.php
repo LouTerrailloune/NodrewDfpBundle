@@ -133,7 +133,7 @@ CONTROL;
         if(!$this->settings->getSynchronousMode())
             $htmlCode .= "googletag.cmd.push(function() {\n";
 
-        $htmlCode .= "var mapping728 = googletag.sizeMapping().addSize([800, 200], [728, 90]).addSize([0, 0], [320, 50]).build();";
+        $htmlCode .= "var mapping728 = googletag.sizeMapping().addSize([800, 200], [728, 90]).addSize([0, 0], [320, 50]).build();\n";
 
         foreach ($this->collection as $unit) {
             /** @var $unit AdUnit */
@@ -223,7 +223,7 @@ CONTROL;
         if(!$sizeMappingName)
             return '';
 
-        return ".defineSizeMapping(".$sizeMappingName.").";
+        return ".defineSizeMapping(".$sizeMappingName.")";
     }
 
 }
