@@ -133,9 +133,11 @@ CONTROL;
         if(!$this->settings->getSynchronousMode())
             $htmlCode .= "googletag.cmd.push(function() {\n";
 
+        $htmlCode .= "var mapping728 = googletag.sizeMapping().addSize([800, 200], [728, 90]).addSize([0, 0], [320, 50]).build();";
+
         foreach ($this->collection as $unit) {
             /** @var $unit AdUnit */
-            $htmlCode .= "googletag.".($unit->getSizes() === null ? 'defineOutOfPageSlot' : 'defineSlot')."('/{$publisherId}/".$unit->getPath()."', ".$this->printSizes($unit->getSizes()).", '".$unit->getDivId()."').addService(googletag.pubads())".$this->getTargetsBlock($unit->getTargets()).";\n";
+            $htmlCode .= "googletag.".($unit->getSizes() === null ? 'defineOutOfPageSlot' : 'defineSlot')."('/{$publisherId}/".$unit->getPath()."', ".$this->printSizes($unit->getSizes()).", '".$unit->getDivId()."').addService(googletag.pubads())".$this->getTargetsBlock($unit->getTargets()).$this->getSizeMappingBlock($unit->getSizeMappingName()).";\n";
         }
 
         if($this->settings->getSynchronousMode())
@@ -210,4 +212,18 @@ CONTROL;
 
         return $block;
     }
+
+    /**
+     * Get the targets block
+     *
+     * @return string
+     */
+    protected function getSizeMappingBlock($sizeMappingName)
+    {
+        if(!$sizeMappingName)
+            return '';
+
+        return ".defineSizeMapping(".$sizeMappingName.").";
+    }
+
 }

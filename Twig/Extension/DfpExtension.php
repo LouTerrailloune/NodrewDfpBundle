@@ -42,9 +42,9 @@ class DfpExtension extends \Twig_Extension
      * @param array $targets
      * @return string
      */
-    public function addAdUnit($path, array $sizes, array $targets = array())
+    public function addAdUnit($path, array $sizes, array $targets = array(), $sizeMappingName = null)
     {
-        $unit = new AdUnit($path, $sizes, $targets);
+        $unit = new AdUnit($path, $sizes, $targets, $sizeMappingName);
 
         $this->collection->add($unit);
         
@@ -58,9 +58,9 @@ class DfpExtension extends \Twig_Extension
      * @param array $targets
      * @return string
      */
-    public function addOutOfPageAdUnit($path, array $targets = array())
+    public function addOutOfPageAdUnit($path, array $targets = array(), $sizeMappingName = null)
     {
-        $unit = new AdUnit($path, null, $targets);
+        $unit = new AdUnit($path, null, $targets, $sizeMappingName);
 
         $this->collection->add($unit);
         

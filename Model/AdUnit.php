@@ -16,6 +16,7 @@ class AdUnit extends TargetContainer
 {
     protected $path;
     protected $sizes;
+    protected $sizeMappingName;
     protected $divId;
     protected $targets = array();
 
@@ -24,11 +25,12 @@ class AdUnit extends TargetContainer
      * @param array|null $sizes
      * @param array $targets
      */
-    public function __construct($path, $sizes=null, array $targets = array())
+    public function __construct($path, $sizes=null, array $targets = array(), $sizeMappingName = null)
     {
         $this->setPath($path);
         $this->setSizes($sizes);
         $this->setTargets($targets);
+        $this->setSizeMappingName($sizeMappingName);
 
         $this->buildDivId();
     }
@@ -228,4 +230,22 @@ class AdUnit extends TargetContainer
     {
         return $this->divId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getSizeMappingName()
+    {
+        return $this->sizeMappingName;
+    }
+
+    /**
+     * @param mixed $sizeMappingName
+     */
+    public function setSizeMappingName($sizeMappingName)
+    {
+        $this->sizeMappingName = $sizeMappingName;
+    }
+
+
 }
