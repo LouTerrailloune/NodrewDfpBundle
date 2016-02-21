@@ -58,6 +58,9 @@ class ControlCodeListener
     {
         $response = $event->getResponse();
 
+        if(!$response->getContent())
+            return;
+
         $controlCode = '';
         if (count($this->collection) > 0) {
             $controlCode .= $this->getMainControlCode();
