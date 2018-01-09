@@ -137,6 +137,7 @@ CONTROL;
             $htmlCode .= "googletag.cmd.push(function() {\n";
 
         $htmlCode .= "var mapping728 = googletag.sizeMapping().addSize([800, 200], [728, 90]).addSize([0, 0], [320, 50]).build();\n";
+        $htmlCode .= "var mapping728nomobile = googletag.sizeMapping().addSize([800, 200], [728, 90]).addSize([0, 0], []).build();\n";
 
         foreach ($this->collection as $unit) {
             /** @var $unit AdUnit */
